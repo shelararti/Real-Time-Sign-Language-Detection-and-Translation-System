@@ -27,35 +27,25 @@ This project combines **computer vision** and **deep learning** to translate ASL
 
 ---
 
-## 🗂️ Project Structure
+## 🗂️ Project Structure  
 
+```plaintext
 asl-sign-detection/
-
 │
-
-├── app.py # Flask web application
-
-├── train_model.py # Model training script
-
-├── model.keras # Saved trained model
-
-├── label_mapping.npy # Encoded label dictionary
-
-├── sign_data.csv # Dataset of hand landmarks
-
+├── app.py               # Flask web application
+├── train_model.py       # Model training script
+├── model.keras          # Saved trained TensorFlow model
+├── label_mapping.npy    # Encoded label dictionary
+├── sign_data.csv        # Dataset of hand landmarks
 │
-
-├── templates/
-
-│ └── index.html # UI 
-
+├── templates/           # HTML templates
+│   └── index.html       # Front-end UI
 │
-├── static/
-
-│ ├── signs.png
+├── static/              # Static files (CSS, JS, images)
+│   └── signs.png        # Example image asset
 │
-
-└── README.md # Project documentation
+└── README.md            # Project documentation
+```
 
 ---
 
@@ -146,8 +136,6 @@ Action	Description
 ## 🧾 Dependencies
 Listed in requirements.txt:
 
-- nginx
-- Copy code
 - Flask
 - numpy
 - opencv-python
