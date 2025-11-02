@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Sign Language Detection Dashboard</title>
+    <style>
+        /* 🌐 General Layout */
+        body {
+            margin: 0;
+            font-family: "Segoe UI", Roboto, Arial, sans-serif;
+            background: #f0f2f5;
+            color: #333;
+        }
+
+        h1 {
+            text-align: center;
+            margin: 20px 0;
+            color: #0d47a1;
+            font-weight: 600;
+        }
+
+        /* 🖥️ Dashboard Layout */
+        .dashboard {
+            display: flex;
+            min-height: 80vh;
+            gap: 30px;
+            padding: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        /* 🟦 Sidebar */
+        .sidebar {
+            flex: 1 1 300px;
+            background: #ffffff;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            min-width: 280px;
+        }
+
+        .sidebar h2 {
+            color: #1565c0;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .panel {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        /* 🎨 Professional Button Colors */
+        button {
+            padding: 12px 20px;
+            font-size: 16px;
+            font-weight: 600;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        }
+
+        button:hover {
+            filter: brightness(90%);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+        }
+
+        /* Muted professional palette */
+        #startBtn { background: #4CAF50; color: #fff; }       /* muted green */
+        #stopBtn { background: #E53935; color: #fff; }        /* deep red */
+        #exitBtn { background: #616161; color: #fff; }        /* dark gray */
+        #signModeBtn { background: #1E88E5; color: #fff; }    /* calm blue */
+        #sentenceModeBtn { background: #00ACC1; color: #fff; }/* tealish professional */
+        button[onclick] { background: #00ACC1; color: #fff; } /* Space button same as sentence mode */
+
+        /* 🗨️ Instructions */
+        .instructions {
+            background: #f1f3f5;
+            padding: 15px;
+            border-radius: 10px;
+            font-weight: 500;
+            text-align: center;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+        }
+
+        /* 📝 Sentence Display */
+        #sentenceDisplay {
+            font-size: 20px;
+            font-weight: bold;
+            color: #212529;
+            background: #ffffff;
+            border: 2px solid #90caf9;
+            border-radius: 10px;
+            padding: 10px 20px;
+            text-align: center;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+            margin-top: 10px;
+        }
+
+        /* 🖼️ Main Content */
+        .main-content {
+            flex: 2 1 600px;
+            display: flex;
+            gap: 30px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .media-box {
+            background: #ffffff;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            text-align: center;
+            flex: 1 1 300px;
+        }
+
+        .media-box h2 {
+            margin-bottom: 15px;
+            color: #1565c0;
+            font-weight: 600;
+        }
+
+        .media-box img {
+            width: 100%;
+            max-width: 640px;
+            height: auto;
+            border-radius: 10px;
+            border: 2px solid #e0e0e0;
+            object-fit: contain;
+        }
+
+        /* 📐 Responsive tweaks */
+        @media (max-width: 900px) {
+            .dashboard {
+                flex-direction: column;
+                align-items: center;
+            }
+            .main-content {
+                flex-direction: column;
+                gap: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>Real Time Sign Language Translation</h1>
+
+    <div class="dashboard">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <h2>Controls</h2>
+            <div class="panel">
+                <button id="startBtn">Start Camera</button>
+                <button id="stopBtn">Stop Camera</button>
+                <button id="exitBtn">Exit</button>
+            </div>
+
+            <h2>Mode Selection</h2>
+            <div class="panel">
+                <button id="signModeBtn">Detect Single Sign</button>
+                <button id="sentenceModeBtn">Detect Sentence</button>
+                <button onclick="addSpace()">Space</button>
+            </div>
+
+            <div class="instructions">
+                In sentence mode:<br>
+                Press <strong>'E'</strong> to clear the entire sentence.<br>
+                Press <strong>'C'</strong> to delete the last letter.
+            </div>
+
+            <div id="sentenceDisplay"></div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="media-box">
+                <h2>Sign Language Reference Chart</h2>
+                <img src="{{ url_for('static', filename='signs.png') }}" alt="Sign Language Chart">
+            </div>
+
+            <div class="media-box">
+                <h2>Camera Feed</h2>
+                <img id="videoFeed" src="" alt="Video Feed">
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript (unchanged) -->
+    <script>
+        const videoFeed = document.getElementById('videoFeed');
+        const startBtn = document.getElementById('startBtn');
+        const stopBtn = document.getElementById('stopBtn');
+        const exitBtn = document.getElementById('exitBtn');
+        const signModeBtn = document.getElementById('signModeBtn');
+        const sentenceModeBtn = document.getElementById('sentenceModeBtn');
+        const sentenceDisplay = document.getElementById('sentenceDisplay');
+
+        startBtn.onclick = () => {
+            fetch('/start', { method: 'POST' })
+                .then(response => response.json())
+                .then(() => {
+                    videoFeed.src = '/video_feed';
+                });
+        };
+
+        stopBtn.onclick = () => { videoFeed.src = ''; };
+
+        function shutdown() {
+            fetch('/shutdown', { method: 'POST' })
+                .then(response => response.text())
+                .then(html => { document.write(html); });
+        }
+
+        exitBtn.onclick = shutdown;
+
+        signModeBtn.onclick = () => {
+            fetch('/set_mode/sign', { method: 'POST' })
+                .then(() => alert('Switched to Sign Mode'));
+        };
+
+        sentenceModeBtn.onclick = () => {
+            fetch('/set_mode/sentence', { method: 'POST' })
+                .then(() => alert('Switched to Sentence Mode'));
+        };
+
+        document.addEventListener('keydown', async (event) => {
+            const key = event.key.toLowerCase();
+            if (key === 'e') {
+                await fetch('/clear_sentence', { method: 'POST' });
+                sentenceDisplay.innerText = '';
+            } else if (key === 'c') {
+                const response = await fetch('/delete_last_letter', { method: 'POST' });
+                const data = await response.json();
+                sentenceDisplay.innerText = data.sentence || '';
+            }
+        });
+
+        function addSpace() {
+            fetch('/add_space', { method: 'POST' })
+                .then(response => response.json())
+                .then(data => { sentenceDisplay.innerText = data.sentence; });
+        }
+    </script>
+</body>
+</html>
