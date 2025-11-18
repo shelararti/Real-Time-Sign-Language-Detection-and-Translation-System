@@ -53,24 +53,11 @@ asl-sign-detection/
 
 ### 1️⃣ Clone this repository
 ```bash
-git clone https://github.com/<your-username>/asl-sign-detection.git
+git clone https://github.com/shelararti/Real-Time-Sign-Language-Detection-and-Translation-System
 cd asl-sign-detection
 ```
 
-2️⃣ Create a virtual environment (optional but recommended)
-```bash
-python -m venv venv
-venv\Scripts\activate       # On Windows
-# or
-source venv/bin/activate    # On Mac/Linux
-```
-
-3️⃣ Install dependencies
-```bash
-pip install -r requirements.txt
-```
-
-4️⃣ Run the Flask app
+2️⃣ Run the Flask app
 ```bash
 python app.py
 ```
@@ -134,7 +121,7 @@ Action	Description
 🔻 Shutdown	Stops camera and app
 
 ## 🧾 Dependencies
-Listed in requirements.txt:
+Requirements.txt:
 
 - Flask
 - numpy
@@ -175,6 +162,8 @@ This project is licensed under the MIT License — you’re free to use, modify,
 - TensorFlow
 
 - OpenCV
+
+- Kaggle
 
 ---
 
